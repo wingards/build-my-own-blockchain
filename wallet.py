@@ -10,6 +10,7 @@ import Crypto.Random as random
 from Crypto.PublicKey import RSA
 
 from sha import to_sha
+from block import Block
 from transaction import Transaction
 
 from node import node
@@ -42,7 +43,11 @@ class Wallet(node.Node_Interface):
         self.address = to_sha(self.private_key.exportKey().decode('ascii'))
 
         self.blockchain = BlockChain()
+        self._init_connections()
         chains = self.update_chains()
+
+    def _init_connections(self):#Todo
+        pass
 
     def update_chains(self):
         data = {'key':'update', 'value':self.blockchain.chain_length()}
@@ -77,19 +82,40 @@ class Wallet(node.Node_Interface):
 
         message = json.loads(msg)
         key = message['key']
-        if key == 'transaction':
+        if key == 'transaction':#new transaction
 
-            pass
-            #self.broadcast_message.append(data)
-        elif key == 'block':
-            pass
+            transaction_dict = json.loads(message['value'])
+            transaction = Transaction()
+            transaction.to_transaction(transaction_dict)
+
+            self.blockchain.add_transaction(transaction)
+            self.server.server.send_string(msg)
+
+        elif key == 'block':#
+
+            block_dict = json.loads(message['value'])
+            block = Block()
+            block.to_block(block_dict)
+
+            if self.blockchain.get_last_hash() != block.previous_hash:
+                self.server.server.send_string("1")
+            elif self.blockchain.chain_length != block.block_number:
+                self.server.server.send_string("2")
+            elif self.blockchain.mining_validation(block.previous_hash, block.nonce, self.blockchain.get_difficulty(block.block_number)) == False:
+                self.server.server.send_string("3")
+            else:
+                self.blockchain.add_block(block)
+                self.server.server.send_string("0")
+
         elif key == 'update':
+
             length = message['value']
             if length < self.blockchain.chain_length():#remote chain shorter than local
                 data = {'key':'chain', 'value':self.blockchain.chain_to_dict()}
             else:#update local
                 data = {'key':'update', 'value':self.blockchain.chain_length()}
             self.server.server.send_string(json.dumps(data))
+
         elif key == 'chain':
 
             chain, transaction = self.blockchains.to_chains(message['value'])

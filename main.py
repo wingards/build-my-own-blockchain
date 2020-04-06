@@ -123,7 +123,6 @@ if __name__ == '__main__':
    
     wallet = Wallet()
     wallet.listen()
-    print(wallet.generate_transaction(wallet.address, 0))
 
     window = tk.Tk()
     app = Main_Window(window, wallet)

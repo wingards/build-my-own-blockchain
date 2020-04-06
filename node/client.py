@@ -41,11 +41,16 @@ class Client_Interface:
     def broadcast_message(self, message):
 
         recvs = []
+
+        if not self.connections:
+            print("Broadcast message fail: No Connections")
+            return recvs
+
         for i in range(len(self.connections)):
             self.send_message(i, message)
             recvs.append(self.wait_recieve(i))
 
-        print(recvs)
+        print("Response:{}".format(recvs))
 
         return recvs
 

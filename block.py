@@ -6,7 +6,7 @@ from sha import to_sha
 from transaction import Transaction
 
 class Block:
-    def __init__(self, block_number, nonce, previous_hash, transactions):
+    def __init__(self, block_number = None, nonce = None, previous_hash = None, transactions = None):
         self.timestamp = time()
         self.block_number = block_number
         self.nonce = nonce
@@ -42,7 +42,7 @@ class Block:
         
         transactions = []
         for transaction_dict in block['transactions']:
-            transaction = Transaction(None, None, None, 0)
+            transaction = Transaction()
             transaction.to_transaction(transaction_dict)
             transactions.append(transaction)
         self.transactions = transactions
@@ -50,7 +50,7 @@ class Block:
 if __name__ == '__main__':
 
     transactions = []
-    transaction = Transaction(None, None, None, 0)
+    transaction = Transaction()
     transactions.append(transaction)
 
     block = Block(0, 0, 0, transactions)

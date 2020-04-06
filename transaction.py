@@ -8,7 +8,7 @@ from Crypto.Signature import PKCS1_v1_5
 from sha import to_sha
 
 class Transaction_Interface:
-    def __init__(self, sender_address, private_key, reciever_address, value):
+    def __init__(self, sender_address = None, private_key = None, reciever_address = None, value = None):
         self.sender_address = sender_address
         self.private_key = private_key
         self.reciever_address = reciever_address

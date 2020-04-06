@@ -25,6 +25,9 @@ class BlockChain:
     def get_chains(self):
         return self.chains
 
+    def get_last_hash(self):
+        return self.chains[-1].hash_block()
+
     def init_chain(self):
         print("initialize block chain with genesis block")
         genesis_block = Block(0, 0, 0, [])
@@ -119,7 +122,7 @@ class BlockChain:
         nonce = 0
 
         while True:
-            if self.mining_validation(last_hash, nonce, 1) is False:
+            if self.mining_validation(last_hash, nonce, self.get_difficulty(self.chain_length())) is False:
                 if last_block != self.chains[-1]:
                     return -1
                 nonce += 1
@@ -161,7 +164,7 @@ class BlockChain:
         for i in range(1, len(self.chains)):
             chains.append(self.chains[i].previous_hash)
 
-        chains.append(self.chains[-1].hash_block())
+        chains.append(self.get_last_hash())
 
         return chains
 
