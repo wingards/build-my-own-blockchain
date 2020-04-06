@@ -84,7 +84,7 @@ class Wallet(node.Node_Interface):
         key = message['key']
         if key == 'transaction':#new transaction
 
-            transaction_dict = json.loads(message['value'])
+            transaction_dict = message['value']
             transaction = Transaction()
             transaction.to_transaction(transaction_dict)
 
@@ -93,7 +93,7 @@ class Wallet(node.Node_Interface):
 
         elif key == 'block':#
 
-            block_dict = json.loads(message['value'])
+            block_dict = message['value']
             block = Block()
             block.to_block(block_dict)
 

@@ -85,7 +85,7 @@ class BlockChain:
         self.chains, self.transactions = self.to_chains(chain)
 
     def get_difficulty(self, block_height):
-        return 1
+        return block_height // 5 + 1
 
     def mining_validation(self, block_hash, nonce, difficulty):
         string = str(block_hash) + str(nonce)
@@ -156,6 +156,7 @@ class BlockChain:
         self.add_block(next_block)
 
         return next_block
+
 
     def list_blocks_hash(self):
 
