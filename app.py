@@ -51,14 +51,19 @@ class Main_Window():
         clear_button.pack(side=tk.LEFT, fill=tk.X)
 
         #connect info
+        self.conn_frame = tk.Frame(self.top_frame)
+        self.conn_frame.pack(side=tk.LEFT, fill=tk.X)
+
         self.addrString = tk.StringVar()
         self.portString = tk.StringVar()
 
-        self.addr_entry = tk.Entry(self.top_frame, width=20, textvariable=self.addrString)
-        self.port_entry = tk.Entry(self.top_frame, width=20, textvariable=self.portString)
+        self.addr_entry = tk.Entry(self.conn_frame, width=20, textvariable=self.addrString)
+        self.port_entry = tk.Entry(self.conn_frame, width=20, textvariable=self.portString)
+        self.addr_entry.grid(row=0, column=0)
+        self.port_entry.grid(row=0, column=1)
 
-        self.addr_entry.pack(side=tk.LEFT, fill=tk.X)
-        self.port_entry.pack(side=tk.LEFT, fill=tk.X)
+        self.conn_list = tk.Listbox(self.conn_frame, height=4)
+        self.conn_list.grid(row=1, column=0, columnspan=2, sticky=tk.W+tk.E+tk.N+tk.S)
 
         conn_button = tk.Button(self.top_frame, text='conn', font='500', bg='red', fg='black', height=5, command=self.click_conn)
         conn_button.pack(side=tk.LEFT, fill=tk.X)
@@ -96,6 +101,8 @@ class Main_Window():
 
     def click_update(self):
         self.wallet.update_chains()
+
+        self.update_connect()
         self.edit_info(self.wallet.blockchain.to_json())
 
     def click_clear(self):
@@ -105,19 +112,37 @@ class Main_Window():
 
         self.edit_info(self.wallet.blockchain.to_json())
 
+    def update_connect(self):
+        self.conn_list.delete(0, 'end')
+
+        for (addr, port) in self.wallet.list_connect():
+            self.conn_list.insert("end", "{}:{}".format(addr, int(port)))
+
+    def wallet_connect(self, addr, port):
+        self.wallet.connect(addr, int(port))
+
+        self.update_connect()
+
     def click_conn(self):
-        self.wallet.connect(self.addrString.get(), int(self.portString.get()))
-        self.addr_entry.config(state='disabled')
-        self.port_entry.config(state='disabled')
-
-    def click_disc(self):
-
-        self.wallet.disconnect(self.addrString.get(), int(self.portString.get()))
+        self.wallet_connect(self.addrString.get(), int(self.portString.get()))
 
         self.addr_entry.delete(0, 'end')
         self.port_entry.delete(0, 'end')
-        self.addr_entry.config(state='normal')
-        self.port_entry.config(state='normal')
+        #self.addr_entry.config(state='disabled')
+        #self.port_entry.config(state='disabled')
+
+    def click_disc(self):
+        
+        idx = self.conn_list.curselection()
+        if not idx:
+            return
+        info = self.conn_list.get(idx).split(":")
+        self.wallet.disconnect(info[0], int(info[1]))
+
+        self.update_connect()
+
+        #self.addr_entry.config(state='normal')
+        #self.port_entry.config(state='normal')
 
     def select_mine(self, event):
         pass
@@ -135,6 +160,8 @@ class Main_Window():
         self.Chain_Info.insert(tk.END, info)
 
     def run_ui(self):
+        print("Activate User Interface")
+        self.update_connect()
         self.window.mainloop()
 
 if __name__ == '__main__':
@@ -145,5 +172,6 @@ if __name__ == '__main__':
     app = Main_Window(window, wallet, False)
 
     app.edit_info(wallet.blockchain.to_json())
+    app.wallet_connect("127.0.0.1", 9527)
 
     app.run_ui()

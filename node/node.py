@@ -12,6 +12,9 @@ class Node_Interface:
     def disconnect(self, host, port):
         self.client.disconnect(host, port)
 
+    def list_connect(self):
+        return self.client.connect_check
+
     def broadcast_message(self, message):
         self.client.broadcast_message(message)
 
