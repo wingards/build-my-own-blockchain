@@ -10,5 +10,5 @@ Basically, run the following command works good enough.
 ```
 python main.py
 ```
-Furthermore, `rgument ``-h``` to get more information.
+Furthermore, argument ```-h``` to get more information.
 
