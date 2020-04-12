@@ -1,6 +1,4 @@
 
-import os
-import tkinter as tk
 import argparse
 
 from app import Main_Window
@@ -24,4 +22,4 @@ if __name__ == '__main__':
     wallet = Wallet(args.ip_hosting, args.port_hosting)
     wallet.listen()
 
-    App = Main_Window(tk.Tk(), wallet, args.user_interface)
+    App = Main_Window(wallet, args.user_interface)
