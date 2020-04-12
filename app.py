@@ -6,9 +6,9 @@ from tkinter import ttk
 from wallet import Wallet
 
 class Main_Window():
-    def __init__(self, window, wallet, run = True):
+    def __init__(self, wallet, run = True):
 
-        self.window = window
+        self.window = tk.Tk()
         self.wallet = wallet
         self.blockchain = self.wallet.blockchain
 
@@ -168,8 +168,7 @@ if __name__ == '__main__':
     wallet = Wallet()
     wallet.listen()
 
-    window = tk.Tk()
-    app = Main_Window(window, wallet, False)
+    app = Main_Window(wallet, False)
 
     app.edit_info(wallet.blockchain.to_json())
     app.wallet_connect("127.0.0.1", 9527)
