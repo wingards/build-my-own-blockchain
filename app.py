@@ -168,8 +168,7 @@ if __name__ == '__main__':
     wallet = Wallet()
     wallet.listen()
 
-    window = tk.Tk()
-    app = Main_Window(window, wallet, False)
+    app = Main_Window(wallet, False)
 
     app.edit_info(wallet.blockchain.to_json())
     app.wallet_connect("127.0.0.1", 9527)
