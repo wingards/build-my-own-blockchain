@@ -6,9 +6,9 @@ from tkinter import ttk
 from wallet import Wallet
 
 class Main_Window():
-    def __init__(self, window, wallet, run = True):
+    def __init__(self, wallet, run = True):
 
-        self.window = window
+        self.window = tk.Tk()
         self.wallet = wallet
         self.blockchain = self.wallet.blockchain
 
