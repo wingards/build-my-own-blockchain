@@ -24,27 +24,35 @@ class Wallet(node.Node_Interface):
         if filename == None:
             self.private_key = RSA.generate(1024, random.new().read)
 
-            fp = open("mykey.txt", "wb")
-            fp.write(self.private_key.exportKey('PEM'))
+            fp = open("mykey.txt", "w")
+            fp.write(self.private_key.exportKey('PEM').decode('ascii'))
             fp.close()
-            print('Generate New Wallet:\n', self.private_key.exportKey())
+            print('Generate New Wallet:\n', self.get_private_key())
         else:
-            fp = open(filename, "rb")
-            private_key = fp.read()
+            fp = open(filename, "r")
+            self.private_key = RSA.importKey(fp.read().encode('ascii'))
             fp.close()
 
-            self.private_key = RSA.importKey(private_key)
-            print('Open Wallet:\n', self.private_key.exportKey().decode('ascii'))
+            print('Open Wallet:\n', self.get_private_key())
 
         #[IMPORTANT] Overwrite recieve message
         self.server._response = self._recieve_message
 
         self.public_key = self.private_key.publickey()
+
         self.address = to_sha(self.private_key.exportKey().decode('ascii'))
+
+        print('Public Key:\n', self.get_public_key())
 
         self.blockchain = BlockChain()
         self._init_connections()
         chains = self.update_chains()
+
+    def get_private_key(self):
+        return ''.join(str(item) for item in self.private_key.exportKey('PEM').decode('ascii').split('\n')[1:-1])
+
+    def get_public_key(self):
+        return ''.join(str(item) for item in self.public_key.exportKey('PEM').decode('ascii').split('\n')[1:-1])
 
     def _init_connections(self):#Todo
         pass
@@ -58,10 +66,12 @@ class Wallet(node.Node_Interface):
         self.broadcast_message(message)
 
     def generate_transaction(self, reciever_address, value):
-        transaction = Transaction(self.address, self.private_key.exportKey().decode('ascii'), reciever_address, value)
-        return transaction.to_json()
-        return transaction.hash_transaction()
-        return jsonify(transaction.transaction_to_dict())
+
+        #check value valid
+
+
+        transaction = Transaction(self.address, self.private_key, reciever_address, value)
+        return transaction.transaction_to_dict()
 
     def broadcast_transaction(self, transaction):
         data = {'key':'transaction', 'value':transaction}
@@ -89,7 +99,7 @@ class Wallet(node.Node_Interface):
             transaction.to_transaction(transaction_dict)
 
             self.blockchain.add_transaction(transaction)
-            self.server.server.send_string(msg)
+            self.server.server.send_string("0")
 
         elif key == 'block':#
 
@@ -149,4 +159,4 @@ if __name__ == '__main__':
     transaction = wallet.generate_transaction(wallet.address, 0)
 
     wallet.listen()
-    wallet.broadcast_transaction(transaction)
+    wallet.broadcast_transaction(json.dumps(transaction))

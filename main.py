@@ -19,7 +19,7 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
-    wallet = Wallet(args.ip_hosting, args.port_hosting)
+    wallet = Wallet(args.ip_hosting, args.port_hosting, 'mykey.txt')
     wallet.listen()
 
     App = Main_Window(wallet, args.user_interface)

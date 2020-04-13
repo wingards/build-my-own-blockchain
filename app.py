@@ -29,6 +29,15 @@ class Main_Window():
         self.window.geometry('800x300')
         self.window.configure(background='dim gray')
 
+        #user frame
+        self.user_frame = tk.Frame(self.window, bd=1)
+        self.user_frame.pack(expand=True, fill=tk.X)
+
+        self.walletString = tk.StringVar()
+        self.wallet_entry = tk.Entry(self.user_frame, textvariable=self.walletString)
+        self.wallet_entry.pack(side=tk.RIGHT, expand=True, fill=tk.BOTH)
+        self.wallet_entry.config(state='readonly')
+
         #top frame
         #
         self.top_frame = tk.Frame(self.window)
@@ -49,6 +58,10 @@ class Main_Window():
         #clear button
         clear_button = tk.Button(self.top_frame, text='clear', font='500', bg='red', fg='black', height=5, command=self.click_clear)
         clear_button.pack(side=tk.LEFT, fill=tk.X)
+
+        #transaction
+        trans_button = tk.Button(self.top_frame, text='trans', font='500', bg='red', fg='black', height=5, command=self.click_transaction)
+        trans_button.pack(side=tk.LEFT, fill=tk.X)
 
         #connect info
         self.conn_frame = tk.Frame(self.top_frame)
@@ -87,6 +100,9 @@ class Main_Window():
         self.Chain_Info = tk.Text(self.bottom_frame, bg='black', fg='white')
         self.Chain_Info.pack(fill=tk.X)
 
+    def update_wallet(self):
+        self.walletString.set(self.wallet.address)
+
     def click_mine(self, event):
 
         if event.num == 3:#right click
@@ -102,6 +118,7 @@ class Main_Window():
     def click_update(self):
         self.wallet.update_chains()
 
+        self.update_wallet()
         self.update_connect()
         self.edit_info(self.wallet.blockchain.to_json())
 
@@ -109,6 +126,12 @@ class Main_Window():
         self.blockchain.clear_chain()
         self.blockchain.init_chain()
         self.blockchain.save_chain()
+
+        self.edit_info(self.wallet.blockchain.to_json())
+
+    def click_transaction(self):
+        transaction = self.wallet.generate_transaction(self.wallet.address, 0)
+        self.wallet.broadcast_transaction(transaction)
 
         self.edit_info(self.wallet.blockchain.to_json())
 
@@ -160,8 +183,12 @@ class Main_Window():
         self.Chain_Info.insert(tk.END, info)
 
     def run_ui(self):
+
         print("Activate User Interface")
+
+        self.update_wallet()
         self.update_connect()
+
         self.window.mainloop()
 
 if __name__ == '__main__':

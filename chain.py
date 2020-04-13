@@ -4,6 +4,7 @@ from time import sleep
 import json
 from sha import to_sha
 from block import Block
+from transaction import Transaction
 
 class BlockChain:
     def __init__(self):
@@ -72,9 +73,9 @@ class BlockChain:
 
         transaction = []
         for transaction_dict in transactions:
-            transaction = Transaction(None, None, None, 0)
-            transaction.to_transaction(transaction_dict)
-            transaction.append(transaction)
+            trans = Transaction(None, None, None, 0)
+            trans.to_transaction(transaction_dict)
+            transaction.append(trans)
 
         return chain, transaction
 
