@@ -4,7 +4,6 @@ import copy
 import time
 import json
 import threading
-from flask import jsonify
 
 import Crypto.Random as random
 from Crypto.PublicKey import RSA
@@ -17,7 +16,7 @@ from node import node
 from chain import BlockChain
 
 class Wallet(node.Node_Interface):
-    def __init__(self, address = "127.0.0.1", port = 9527, filename : str = None):
+    def __init__(self, address = "0.0.0.0", port = 9527, filename : str = None):
 
         super().__init__(address, port)
 

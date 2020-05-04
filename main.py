@@ -22,4 +22,5 @@ if __name__ == '__main__':
     wallet = Wallet(args.ip_hosting, args.port_hosting, 'mykey.txt')
     wallet.listen()
 
-    App = Main_Window(wallet, args.user_interface)
+    if args.user_interface:
+        App = Main_Window(wallet, args.user_interface)

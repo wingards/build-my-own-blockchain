@@ -12,9 +12,6 @@ class Main_Window():
         self.wallet = wallet
         self.blockchain = self.wallet.blockchain
 
-        self.main_frame = tk.Frame(self.window)
-        self.main_frame.pack()
-
         self.set_ui()
 
         if run:
@@ -28,6 +25,9 @@ class Main_Window():
         self.window.title('Mainpage')
         self.window.geometry('800x300')
         self.window.configure(background='dim gray')
+
+        self.main_frame = tk.Frame(self.window)
+        self.main_frame.pack()
 
         #user frame
         self.user_frame = tk.Frame(self.window, bd=1)
@@ -197,6 +197,7 @@ if __name__ == '__main__':
 
     app = Main_Window(wallet, False)
 
+    
     app.edit_info(wallet.blockchain.to_json())
     app.wallet_connect("127.0.0.1", 9527)
 
